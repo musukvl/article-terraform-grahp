@@ -1,0 +1,19 @@
+digraph {
+    graph [size="20,5", ratio="fill"];
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] azurerm_resource_group.graph_example_rg (expand)" [label = "azurerm_resource_group.graph_example_rg", shape = "box"]
+		"[root] azurerm_storage_account.storage_account (expand)" [label = "azurerm_storage_account.storage_account", shape = "box"]
+		"[root] data.azurerm_resource_group.graph_example_rg (expand)" [label = "data.azurerm_resource_group.graph_example_rg", shape = "box"]
+		"[root] provider[\"registry.terraform.io/hashicorp/azurerm\"]" [label = "provider[\"registry.terraform.io/hashicorp/azurerm\"]", shape = "diamond"]
+		"[root] azurerm_resource_group.graph_example_rg (expand)" -> "[root] local.location (expand)"
+		"[root] azurerm_resource_group.graph_example_rg (expand)" -> "[root] local.resource_group_name (expand)"
+		"[root] azurerm_resource_group.graph_example_rg (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/azurerm\"]"
+		"[root] azurerm_storage_account.storage_account (expand)" -> "[root] data.azurerm_resource_group.graph_example_rg (expand)"
+		"[root] data.azurerm_resource_group.graph_example_rg (expand)" -> "[root] azurerm_resource_group.graph_example_rg (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/azurerm\"] (close)" -> "[root] azurerm_storage_account.storage_account (expand)"
+		"[root] root" -> "[root] provider[\"registry.terraform.io/hashicorp/azurerm\"] (close)"
+	}
+}
+
