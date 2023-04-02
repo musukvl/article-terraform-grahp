@@ -1,16 +1,22 @@
 
-This article shows you how to organize the order of making and updating Terraform resources by setting up the right connections between them by examples.
-Code examples are available in [GitHub repository](https://github.com/musukvl/article-terraform-graph). I used Azure provider resources, but described concepts are provider agnostic.
+This article demonstrates how to manage the creation and updating of Terraform resources by properly configuring their dependencies, using practical examples. 
+The code examples, available in this [GitHub repository](https://github.com/musukvl/article-terraform-graph) utilize Azure provider resources, but the concepts discussed apply to any provider.
 
 # TL;DR
 
-During planning phase terraform evalutes depenencies between resources and builds a dependency graph. So terraform ensuring the proper order and parallelism for resource change operations.
+During planning phase terraform evaluates dependencies between resources and builds a dependency graph. So terraform ensuring the proper order and parallelism for resource change operations.
 
 * Use resource and module outputs to define dependencies between resources.
 * Use for_each for collecting outputs from created resources.
 * Use `depends_on` very carefully. It can lead to resource recreation becase minor change in related resource.
 * Use `terraform graph` command to review resource dependencies and refactor it.
 
+
+* Use resource and module outputs to define dependencies between resources.
+* Use `for_each` for collecting outputs from created resources.
+* Use `depends_on` with caution, as it can lead to resource recreation due to minor changes in related resources.
+* Use the `terraform graph` command to review resource dependencies and refactor them.
+* Assign proper resource identifiers wisely to be able using it for lookup.
 
 # Using resource output to make dependency
 
@@ -89,10 +95,10 @@ resource "azurerm_storage_account" "storage_account" {
 }
 
 ```
- (Check code in [002-output-depenency]())
+ (Check code in [002-output-dependency](https://github.com/musukvl/article-terraform-graph/tree/master/002-output-dependency))
 
 
-![Resource group and storage account are dependent](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/002-output-depenency/graph.png)
+![Resource group and storage account are dependent](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/002-output-dependency/graph.png)
 
 Now the graph shows that resource group and storage account are dependent on each other. 
 
@@ -160,8 +166,8 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 
 # Terraform graph refactoring
 
-Using `terrafor graph > graph.dot` command is a good way to do dependency refactoring. You can generate graph file before refactoring and after and compare them. No changes in the graph means that you did not break anything.
-You can vizualize graph with Graphviz (DOT) tool: `terraform graph > graph.dot`
+Using `terraform graph > graph.dot` command is a good way to do dependency refactoring. You can generate graph file before refactoring and after and compare them. No changes in the graph means that you did not break anything.
+You can visualize graph with Graphviz (DOT) tool: `terraform graph > graph.dot`
 
 The previous example can be refactored to not use `depends_on` and having the same dependency graph by using resource output for dependency:
 
@@ -257,14 +263,30 @@ resource "azurerm_storage_account" "storage_account" {
 ```
 (Check code in [005-one-to-many-relation](https://github.com/musukvl/article-terraform-graph/tree/master/005-one-to-many-relation))
 
-The key idea of the example is using local variable to make dependency between resources with local variable. So local variable evaluated only when resource groups are created.
+The essential of the example is using local variable to make dependency between created resources and local variable. 
+So local variable evaluated only when resource groups are created, and then storage accounts are created only when variable evaluated.
 
 ![one-to-many relation](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph-key.png)
 
-Using local variables for iterrating created resources is a good way to make code more readable and maintainable. You also can use multipe local variables for different created resources and make join operations between them.
+It is possible to use multiple local variables for different created resources and make join operations between them.
+Using local variables for iterating created resources is also a good way to make code more readable and maintainable. 
+
+This example also demonstrates importance of resource identifiers management, in this case local.config map keys used as resource group resource identifiers, and concatenation of resource group key and storage account key used as storage account resource identifiers.
+
+```shell
+azurerm_resource_group.graph_example_rg["sample-rg1"]: Creating...
+azurerm_storage_account.storage_account["sample-rg1_sa11"]: Still creating... [10s elapsed]
+azurerm_storage_account.storage_account["sample-rg1_sa12"]: Still creating... [10s elapsed]
+```
+
+Using the same keys (`rg_key`) in the local.config map and as identifier of created resources allows to join created resource with the corresponding configuration in the local.config map.
+```hcl
+for rg_key, rg in azurerm_resource_group.graph_example_rg : {
+      for sa_key, sa in local.config[rg_key].storage_accounts
+```
 
 
-#Conclusion
+ 
+# Conclusion
 
-Understanding the Terraform resource graph is essential for efficiently managing infrastructure with Terraform. 
-The graph shows the dependencies between resources and helps to avoid problems with resource creation order.
+The article provides various examples to illustrate these concepts, such as using resource output to make dependencies, avoiding depends_on when possible, refactoring the Terraform graph, and managing one-to-many relationships between resources. These examples demonstrate the importance of managing resource identifiers and using local variables to make dependencies between created resources, making the code more readable and maintainable.

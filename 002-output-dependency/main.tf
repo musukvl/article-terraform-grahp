@@ -1,6 +1,6 @@
 locals {
-  location = "northeurope"
-  resource_group_name = "ary-graph-example-rg"   
+  location            = "northeurope"
+  resource_group_name = "ary-graph-example-rg"
 }
 
 resource "azurerm_resource_group" "graph_example_rg" {

@@ -1,19 +1,19 @@
 locals {
-  location = "northeurope"
-  resource_group_name = "ary-graph-example-rg"   
+  location            = "northeurope"
+  resource_group_name = "ary-graph-example-rg"
 }
 
 resource "azurerm_resource_group" "graph_example_rg" {
   name     = local.resource_group_name
   location = local.location
-  tags     = {
+  tags = {
     "asset-owner" = "Mark1"
   }
 }
 
 data "azurerm_resource_group" "graph_example_rg" {
-  depends_on               = [azurerm_resource_group.graph_example_rg]
-  name = local.resource_group_name
+  depends_on = [azurerm_resource_group.graph_example_rg]
+  name       = local.resource_group_name
 }
 
 resource "azurerm_storage_account" "storage_account" {
