@@ -7,12 +7,6 @@ The code examples, available in this [GitHub repository](https://github.com/musu
 During planning phase terraform evaluates dependencies between resources and builds a dependency graph. So terraform ensuring the proper order and parallelism for resource change operations.
 
 * Use resource and module outputs to define dependencies between resources.
-* Use for_each for collecting outputs from created resources.
-* Use `depends_on` very carefully. It can lead to resource recreation becase minor change in related resource.
-* Use `terraform graph` command to review resource dependencies and refactor it.
-
-
-* Use resource and module outputs to define dependencies between resources.
 * Use `for_each` for collecting outputs from created resources.
 * Use `depends_on` with caution, as it can lead to resource recreation due to minor changes in related resources.
 * Use the `terraform graph` command to review resource dependencies and refactor them.
