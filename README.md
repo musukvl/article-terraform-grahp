@@ -7,7 +7,7 @@ During planning phase terraform evalutes depenencies between resources and build
 
 * Use resource and module outputs to define dependencies between resources.
 * Use for_each for collecting outputs from created resources.
-* Use `depends_on` very carefully, because it can lead to resource recreation because of minor change in related resource.
+* Use `depends_on` very carefully. It can lead to resource recreation becase minor change in related resource.
 * Use `terraform graph` command to review resource dependencies and refactor it.
 
 
@@ -91,19 +91,15 @@ resource "azurerm_storage_account" "storage_account" {
  (Check code in [002-output-depenency]())
 
 
-
-
 ![Resource group and storage account are dependent](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/002-output-depenency/graph.png)
 
 Now the graph shows that resource group and storage account are dependent on each other. 
 
 # Using depends_on to make dependency
 
-'depends_on' is way to enforce dependency between resources. It is not recommended to use it, because it can lead to resource recreation because of minor change in related resource.
+Using 'depends_on' is way to enforce dependency between resources. It is not recommended to use it, because it can lead to resource recreation because of minor change in related resource.
 
 In the following example, resource group tag change, causes recreation of storage account:
-
-```hcl
 
 ```hcl
 locals {
@@ -133,7 +129,7 @@ resource "azurerm_storage_account" "storage_account" {
   account_replication_type = "LRS"
 }
 ```
-(Check code in [003-depends_on]())
+(Check code in [003-depends_on](https://github.com/musukvl/article-terraform-graph/tree/master/003-depends_on))
 
 For example in case of changing tag value from "Mark" to "Mark1" terraform will generate the following plan:
 
@@ -159,7 +155,7 @@ For example in case of changing tag value from "Mark" to "Mark1" terraform will 
 Plan: 1 to add, 1 to change, 1 to destroy.
 
 ```
-(Check code in [003-data-resource/update-plan.txt]())
+(Check code in [003-data-resource/update-plan.txt](https://github.com/musukvl/article-terraform-graph/tree/master/003-depends_on/update-plan.txt))
 
 # Terraform graph refactoring
 
@@ -195,7 +191,74 @@ resource "azurerm_storage_account" "storage_account" {
 }
 
 ```
-(Check code in [004-data-resource]())
+(Check code in [004-data-resource](https://github.com/musukvl/article-terraform-graph/tree/master/004-refactoring))
+
+# One to may relation example
+
+In the following example, the resource group and storage account defined in the local.config variable. 
+
+```hcl
+locals {
+  location = "northeurope"
+
+  config = {
+    "sample-rg1" = {
+      name = "ary-graph-example-1-rg"
+      storage_accounts = {
+        "sa11" = {
+          "name" = "arysa11grexstacc"        
+        },
+        "sa12" = {
+          "name" = "arysa12grexstacc"        
+        }
+      }
+    },
+    "sample-rg2" = {
+      name = "ary-graph-example-2-rg"
+      storage_accounts = {
+        "sa21" = {
+          "name" = "arysa21grexstacc"        
+        },
+        "sa22" = {
+          "name" = "arysa22grexstacc"        
+        }
+      }
+    }
+  }
+}
+
+resource "azurerm_resource_group" "graph_example_rg" {
+  for_each = local.config
+  name     = each.value.name  
+  location = local.location
+}
+
+locals {
+  storage_accounts_to_create = merge([
+    for rg_key, rg in azurerm_resource_group.graph_example_rg : {
+      for sa_key, sa in local.config[rg_key].storage_accounts : "${rg_key}_${sa_key}" => {
+        resource_group = rg
+        storage_account_name = sa.name
+      }
+    }
+  ]...)
+}
+
+resource "azurerm_storage_account" "storage_account" {
+  for_each = local.storage_accounts_to_create
+  name                     = each.value.storage_account_name
+  resource_group_name      = each.value.resource_group.name
+  location                 = local.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+```
+(Check code in [005-one-to-many-relation](https://github.com/musukvl/article-terraform-graph/tree/master/005-one-to-many-relation))
+
+The terraform graph for this example is the following:
+![Resource group and storage account are dependent](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph.png)
+
 
 
 #Conclusion

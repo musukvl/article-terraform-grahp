@@ -1,0 +1,20 @@
+azurerm_resource_group.graph_example_rg["sample-rg1"]: Creating...
+azurerm_resource_group.graph_example_rg["sample-rg2"]: Creating...
+azurerm_resource_group.graph_example_rg["sample-rg1"]: Creation complete after 2s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-1-rg]
+azurerm_resource_group.graph_example_rg["sample-rg2"]: Creation complete after 2s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-2-rg]
+azurerm_storage_account.storage_account["sample-rg1_sa12"]: Creating...
+azurerm_storage_account.storage_account["sample-rg1_sa11"]: Creating...
+azurerm_storage_account.storage_account["sample-rg2_sa22"]: Creating...
+azurerm_storage_account.storage_account["sample-rg2_sa21"]: Creating...
+azurerm_storage_account.storage_account["sample-rg1_sa11"]: Still creating... [10s elapsed]
+azurerm_storage_account.storage_account["sample-rg1_sa12"]: Still creating... [10s elapsed]
+azurerm_storage_account.storage_account["sample-rg2_sa22"]: Still creating... [10s elapsed]
+azurerm_storage_account.storage_account["sample-rg2_sa21"]: Still creating... [10s elapsed]
+azurerm_storage_account.storage_account["sample-rg1_sa12"]: Still creating... [20s elapsed]
+azurerm_storage_account.storage_account["sample-rg1_sa11"]: Still creating... [20s elapsed]
+azurerm_storage_account.storage_account["sample-rg2_sa22"]: Still creating... [20s elapsed]
+azurerm_storage_account.storage_account["sample-rg2_sa21"]: Still creating... [20s elapsed]
+azurerm_storage_account.storage_account["sample-rg2_sa22"]: Creation complete after 25s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-2-rg/providers/Microsoft.Storage/storageAccounts/arysa22grexstacc]
+azurerm_storage_account.storage_account["sample-rg1_sa12"]: Creation complete after 25s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-1-rg/providers/Microsoft.Storage/storageAccounts/arysa12grexstacc]
+azurerm_storage_account.storage_account["sample-rg2_sa21"]: Creation complete after 25s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-2-rg/providers/Microsoft.Storage/storageAccounts/arysa21grexstacc]
+azurerm_storage_account.storage_account["sample-rg1_sa11"]: Creation complete after 26s [id=/subscriptions/5293af6a-eac6-493f-8d6f-e6358448a2ff/resourceGroups/ary-graph-example-1-rg/providers/Microsoft.Storage/storageAccounts/arysa11grexstacc]
