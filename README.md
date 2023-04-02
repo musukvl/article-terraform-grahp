@@ -1,9 +1,10 @@
 
-This article shows you how to organize the order of making and updating Terraform resources by setting up the right connections between them.
-
-During planning phase terraform evalutes depenencies between resources and builds a dependency graph. So terraform ensuring the proper order and parallelism for resource change operations.
+This article shows you how to organize the order of making and updating Terraform resources by setting up the right connections between them by examples.
+Code examples are available in [GitHub repository](https://github.com/musukvl/article-terraform-graph). I used Azure provider resources, but described concepts are provider agnostic.
 
 # TL;DR
+
+During planning phase terraform evalutes depenencies between resources and builds a dependency graph. So terraform ensuring the proper order and parallelism for resource change operations.
 
 * Use resource and module outputs to define dependencies between resources.
 * Use for_each for collecting outputs from created resources.
@@ -256,10 +257,11 @@ resource "azurerm_storage_account" "storage_account" {
 ```
 (Check code in [005-one-to-many-relation](https://github.com/musukvl/article-terraform-graph/tree/master/005-one-to-many-relation))
 
-The terraform graph for this example is the following:
+The key idea of the example is using local variable to make dependency between resources with local variable. So local variable evaluated only when resource groups are created.
 
-![one-to-many relation](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph.png)
+![one-to-many relation](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph-key.png)
 
+Using local variables for iterrating created resources is a good way to make code more readable and maintainable. You also can use multipe local variables for different created resources and make join operations between them.
 
 
 #Conclusion
