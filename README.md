@@ -257,7 +257,8 @@ resource "azurerm_storage_account" "storage_account" {
 (Check code in [005-one-to-many-relation](https://github.com/musukvl/article-terraform-graph/tree/master/005-one-to-many-relation))
 
 The terraform graph for this example is the following:
-![Resource group and storage account are dependent](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph.png)
+
+![one-to-many relation](https://raw.githubusercontent.com/musukvl/article-terraform-graph/master/005-one-to-many-relation/graph.png)
 
 
 
