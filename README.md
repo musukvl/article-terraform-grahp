@@ -55,9 +55,17 @@ Here is a work around for such problem: you can run `terraform apply` again and 
 The right solution is to define relation between resource group and storage account. 
 
 It is possible to generate depenency graph with `terraform graph` command and draw image with Graphviz (DOT):
-```
+```sh
 terraform graph | dot -Tpng > graph.png
 ```
+
+use the following command to install Graphviz on Ubuntu:
+```sh
+#!/bin/bash
+sudo apt-get update
+sudo apt-get install graphviz -y
+```
+
 
 The graph shows, that there is no dependency between resource group and storage account, but they both dependend on `local.location` variable. 
 
